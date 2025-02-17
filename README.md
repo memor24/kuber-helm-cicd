@@ -39,3 +39,8 @@ use port forwarding to access the app
 ```
 kubectl port-forward svc/myapp-myapp-chart 8080:6666
 ```
+
+to clean up:
+```
+$ kind delete cluster --name myapp-cluster
+```
