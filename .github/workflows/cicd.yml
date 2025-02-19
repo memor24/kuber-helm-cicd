@@ -5,6 +5,14 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  packages: write
+
+env:
+  Registry: ghcr.io
+  ImageName: memor24/myapp 
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -15,18 +23,21 @@ jobs:
       - name: login to GHCR
         uses: docker/login-action@v2
         with:
-          registry: ghcr.io
+          registry: ${{ env.Registry }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
        # run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u memo24 --password-stdin
 
       - name: build Docker image
-        run: docker build -t ghcr.io/${{ github.repository }}/myapp:latest .
+        run: docker build -t myapp:latest .
+
+      - name: tag docker image
+        run: docker tag myapp:latest ghcr.io/${{ env.ImageName }}/myapp:latest
 
       - name: push Docker image
-        run: docker push ghcr.io/${{ github.repository }}/myapp:latest
+        run: docker push ghcr.io/${{ env.ImageName }}/myapp:latest
 
-      - name: setup KIND cluster
+      - name: setup KinD cluster
         run: |
           curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64
           chmod +x ./kind
