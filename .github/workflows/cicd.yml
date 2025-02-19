@@ -12,14 +12,19 @@ jobs:
       - name: checkout code
         uses: actions/checkout@v3
 
-      - name: login to DockerHub
-        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u memo24 --password-stdin
+      - name: login to GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+       # run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u memo24 --password-stdin
 
       - name: build Docker image
-        run: docker build -t memo24/myapp:latest .
+        run: docker build -t ghcr.io/${{ github.repository }}/myapp:latest .
 
       - name: push Docker image
-        run: docker push memo24/myapp:latest
+        run: docker push ghcr.io/${{ github.repository }}/myapp:latest
 
       - name: setup KIND cluster
         run: |
