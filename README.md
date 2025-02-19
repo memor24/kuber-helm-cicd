@@ -1,10 +1,10 @@
 # kubernetes-helm
 A flask app is deployed on Kubernetes using helm charts:
 - **deployment helm chart:** 
-- **secret management:** creates and applies [regcred secret](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/) to be used in deployment. A second hem chart can be created for secret management too!
+- **secret management:** creates and applies [regcred secret](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/) to be used in deployment. A second hem chart can be created for secret management too! Or it can be manaaged by kubectl.
 
 GHCR is used instead of DockerHub for container registry. A `GITHUB_TOKEN` is needed for CICD read/write access to GHCR.
-CICD is done with GitHub Actions. A `KUBECONFIG` secret is needed to configure kubectl and so that the GitHub Actions runner has access to the cluster.
+CICD is done with GitHub Actions. A `KUBECONFIG` secret might be needed to configure kubectl so that the GitHub Actions runner has access to the cluster.
 
 ### Prerequisites
 
@@ -13,7 +13,7 @@ CICD is done with GitHub Actions. A `KUBECONFIG` secret is needed to configure k
 - Kubectl
 - Helm
 **************************
-#### The deployment is automated via cicd.yml script, but manual steps would have been as below: 
+#### The deployment is automated via cicd.yml script, but manual steps for testing is as below: 
 
 ### Docker
 Login to DockerHub:
@@ -30,14 +30,14 @@ Push the image to the image repository:
 docker tag myapp:latest [docker_username]/myapp:latest
 docker push [docker_username]/myapp:latest
 ```
-But since we use GHCR here, 'GITHUB_TOKEN' will be used for programatic access to GHCR:
+But since we use GHCR here, 'GITHUB_TOKEN' will be used for programatic access to GHCR. 
+Create 'GITHUB_TOKEN' withread/write package permissions in GitHub developer settings.
 ```
 docker tag myapp:latest [github_username]/myapp:latest
 docker push ghcr.io/[github_username]/myapp:latest
 ```
 
-
- ### Kubernetes
+### Kubernetes
 
 Create and verify the Kubernetes cluster
 ```
