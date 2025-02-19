@@ -1,21 +1,45 @@
-# kubernetes-cicd
+# kubernetes-helm
+A flask app is deployed on Kubernetes using helm charts:
+- **deployment helm chart:** 
+- **secret management helm chart:** creates and applies [regcred secret](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/) to be used in deployment 
 
-Here are the steps to deploy the app on Kubernetes, most of which is automated in the cicd script.
-## Docker
-	Build, run and test the docker image locally
-	```
-	docker build -t myapp:latest .
-	docker run -p 6666:6666 myapp
-	```
-	Add .dockerignore to optimize docker build
+GHCR is used instead of DockerHub for container registry. A `GITHUB_TOKEN` is needed for CICD read/write access to GHCR.
+CICD is done with GitHub Actions. A `KUBECONFIG` secret is needed to configure kubectl and so that the GitHub Actions runner has access to the cluster.
 
-	push the image to the image repository
-	```
-	docker login
-	docker tag myapp:latest memo24/myapp:latest
-	docker push memo24/myapp:latest
- ## Kubernetes
- create and verify the Kubernetes cluster
+### Prerequisites
+
+- Docker
+- Kind (Kubernetes in Docker)
+- Kubectl
+- Helm
+**************************
+#### The deployment is automated via cicd.yml script, but manual steps would have been as below: 
+
+### Docker
+Login to DockerHub:
+```
+echo "DockerHub_TOKEN" | docker login -u [docker_username] --password-stdin # DockerHub_PAT is personal access token with read/write access to the DockerHub
+```
+Build, run and test the docker image locally. Add .dockerignore to optimize docker build
+```
+docker build -t myapp:latest .
+docker run -p 6666:6666 myapp
+```
+Push the image to the image repository:
+```
+docker tag myapp:latest [docker_username]/myapp:latest
+docker push [docker_username]/myapp:latest
+```
+But since we use GHCR here, 'GITHUB_TOKEN' will be used for programatic access to GHCR:
+```
+docker tag myapp:latest [github_username]/myapp:latest
+docker push ghcr.io/[github_username]/myapp:latest
+```
+
+
+ ### Kubernetes
+
+Create and verify the Kubernetes cluster
 ```
 kind create cluster --name myapp-cluster
 kubectl cluster-info --context kind-myapp-cluster
