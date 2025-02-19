@@ -1,7 +1,7 @@
 # kubernetes-helm
 A flask app is deployed on Kubernetes using helm charts:
 - **deployment helm chart:** 
-- **secret management helm chart:** creates and applies [regcred secret](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/) to be used in deployment 
+- **secret management:** creates and applies [regcred secret](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/) to be used in deployment. A second hem chart can be created for secret management too!
 
 GHCR is used instead of DockerHub for container registry. A `GITHUB_TOKEN` is needed for CICD read/write access to GHCR.
 CICD is done with GitHub Actions. A `KUBECONFIG` secret is needed to configure kubectl and so that the GitHub Actions runner has access to the cluster.
