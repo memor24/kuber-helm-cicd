@@ -1,4 +1,4 @@
-# kuber-demo
+# kubernetes-kustomize-cicd
 A flask app is deployed on Kubernetes using helm charts:
 - **deployment manifests and kustomize:** 
 - **secret management:** creates and applies [regcred secret](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/) to be used in deployment by kubectl.
