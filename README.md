@@ -1,4 +1,4 @@
-# kubernetes-helm
+# kuber-demo
 A flask app is deployed on Kubernetes using helm charts:
 - **deployment helm chart:** 
 - **secret management:** creates and applies [regcred secret](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/) to be used in deployment. A second hem chart can be created for secret management too! Or it can be manaaged by kubectl.
