@@ -1,4 +1,4 @@
-name: deploying myapp flask app to a KIND cluster
+name: deploying myapp flask app to a KinD cluster
 
 on:
   push:
@@ -9,47 +9,61 @@ permissions:
   contents: read
   packages: write
 
-env:
-  Registry: ghcr.io
-  ImageName: memor24/myapp 
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: checkout code
         uses: actions/checkout@v3
+        
+      - name: set up Docker Buildx # optimizes the build process by caching and parallelizing builds
+        uses: docker/setup-buildx-action@v1
 
       - name: login to GHCR
         uses: docker/login-action@v2
         with:
-          registry: ${{ env.Registry }}
+          registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
        # run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u memo24 --password-stdin
 
-      - name: build Docker image
-        run: docker build -t myapp:latest .
+      - name: build and push Docker image
+        run: |
+          docker build -t ghcr.io/${{ github.repository }}/myapp:latest .
+          docker push ghcr.io/${{ github.repository }}/myapp:latest
 
-      - name: tag docker image
-        run: docker tag myapp:latest ghcr.io/${{ env.ImageName }}/myapp:latest
-
-      - name: push Docker image
-        run: docker push ghcr.io/${{ env.ImageName }}/myapp:latest
-
-      - name: setup KinD cluster
+      - name: install KinD
         run: |
           curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64
           chmod +x ./kind
           sudo mv ./kind /usr/local/bin/kind
-          kind create cluster --name myapp-cluster
+
+      - name: create KinD cluster
+        run: kind create cluster --name myapp-cluster
         
+      - name: install kubectl
+        run: |
+          curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+          chmod +x ./kubectl
+          sudo mv ./kubectl /usr/local/bin/kubectl
+
       - name: install Helm
         run: |
-          curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
-          chmod 700 get_helm.sh
-          ./get_helm.sh
+          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
-      - name: install myapp Helm chart
-        run: helm install myapp ./myapp-chart
+      - name : create regcred kubernetes secret for kubectl acccess to ghcr
+        run: |
+          kubectl create secret docker-registry regcred \
+          --docker-server=ghcr.io \
+          --docker-username=${{ github.actor }} \
+          --docker-password=${{ secrets.GITHUB_TOKEN }} \
+          --docker-email=${{ github.actor }}@sth.co \
+          --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: deploy the Helm chart
+        run: |
+          helm upgrade --install myapp ./helm/myapp \
+          --set image.repository=ghcr.io/${{ github.repository }}/myapp \ 
+          --set image.tag=latest \
+          --set image.PullSecrets=regcred
 
