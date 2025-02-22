@@ -70,5 +70,5 @@ jobs:
           helm upgrade --install myapp ./myapp-chart \
           --set image.repository=ghcr.io/${{ env.ImageRepo }} \ 
           --set image.tag=latest \
-          --set image.pullSecrets = regcred
+          --set image.pullSecrets[0].name=regcred
 
