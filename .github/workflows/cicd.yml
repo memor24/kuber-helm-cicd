@@ -67,7 +67,7 @@ jobs:
 
       - name: deploy the Helm chart
         run: |
-          helm upgrade myapp --install ./myapp-chart \
+          helm upgrade --install myapp ./myapp-chart \
           --set image.repository=ghcr.io/${{ env.ImageRepo }} \ 
           --set image.tag=latest \
           --set image.pullSecrets=regcred
