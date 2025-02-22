@@ -67,7 +67,7 @@ jobs:
 
       - name: deploy the Helm chart # helm upgrade --install for idempotency (upgrade, or install if not exists)
         run: |
-          helm upgrade --install myapp ./myapp-chart \
+          helm --debug upgrade --install myapp ./myapp-chart \
           --set image.repository=ghcr.io/${{ env.ImageRepo }} \ 
           --set image.tag=latest \
           --set image.pullSecrets[0].name=regcred
