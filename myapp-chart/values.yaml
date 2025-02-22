@@ -4,6 +4,6 @@ image:
   tag: ""   # Overrides the image tag whose default is the chart appVersion
 PullSecrets: []   # secret to pull from private repo
 
-serviceAccount:
+service:
   type: ClusterIP
-  port: 6666
+  port: 80

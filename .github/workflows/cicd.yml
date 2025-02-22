@@ -69,5 +69,6 @@ jobs:
         run: |
           helm --debug upgrade --install myapp ./myapp-chart \
           --set image.repository=${{ env.Registry }}/${{ env.ImageRepo }} \
+          --set image.tag=latest \
           --set image.PullSecrets[0].name=regcred
 
