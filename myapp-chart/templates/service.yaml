@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: {{ .Chart.Name }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.service.type | default "ClusterIP" }}
   ports:
-    - port: {{ .Values.service.port }}
+    - port: {{ .Values.service.port | default 80 }}
       targetPort: 6666
   selector:
-    {{ .Chart.Name }}
+    name: {{ .Chart.Name }}
     
