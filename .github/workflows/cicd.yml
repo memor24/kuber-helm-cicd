@@ -65,9 +65,9 @@ jobs:
           --docker-email=${{ github.actor }}@sth.co \
           --dry-run=client -o yaml | kubectl apply -f -
 
-      - name: deploy the Helm chart
+      - name: deploy the Helm chart # helm intall in cicd vs helm upgrade in gitops
         run: |
-          helm upgrade myapp ./myapp-chart \
+          helm install myapp ./myapp-chart \
           --set image.repository=ghcr.io/${{ env.ImageRepo }} \ 
           --set image.tag=latest \
           --set image.pullSecrets=regcred
