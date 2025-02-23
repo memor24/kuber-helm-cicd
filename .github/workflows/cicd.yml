@@ -11,7 +11,7 @@ permissions:
 
 env:
   Registry: ghcr.io
-  ImageRepo: memor24/myapp
+  ImageRepo: memor24/imagesfolder
 
 jobs:
   build-and-deploy:
@@ -65,7 +65,10 @@ jobs:
           --docker-email=${{ github.actor }}@sth.co \
           --dry-run=client -o yaml | kubectl apply -f -
 
-      - name: deploy the Helm chart # (for iddempotency: upgrade, or install if not exists)
+      - name: deploy the Helm chart 
         run: |
-          helm --debug upgrade --install myapp ./myapp-chart --set image.pullSecrets[0].name=regcred
+          helm upgrade --install myapp ./myapp-chart \
+          --set image.repository=${{ env.Registry }}/${{ env.ImageRepo }}/myapp \
+          --set image.tag=latest \
+          --set image.pullSecrets[0].name=regcred
 

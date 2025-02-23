@@ -9,4 +9,3 @@ spec:
       targetPort: 6666
   selector:
     name: {{ .Chart.Name }}
-    
