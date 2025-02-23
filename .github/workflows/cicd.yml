@@ -65,7 +65,7 @@ jobs:
           --docker-email=${{ github.actor }}@sth.co \
           --dry-run=client -o yaml | kubectl apply -f -
 
-      - name: deploy the Helm chart # helm upgrade --install (upgrade, or install if not exists)
+      - name: deploy the Helm chart # (for iddempotency: upgrade, or install if not exists)
         run: |
           helm upgrade --install myapp ./myapp-chart \
           --set image.repository=${{ env.Registry }}/${{ env.ImageRepo }} \
