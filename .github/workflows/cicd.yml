@@ -11,7 +11,7 @@ permissions:
 
 env:
   Registry: ghcr.io
-  ImageRepo: memor24/imagesfolder
+  ImageRepo: memor24/myapp
 
 jobs:
   build-and-deploy:
@@ -67,8 +67,5 @@ jobs:
 
       - name: deploy the Helm chart # (for iddempotency: upgrade, or install if not exists)
         run: |
-          helm upgrade --install myapp ./myapp-chart \
-          --set image.repository=${{ env.Registry }}/${{ env.ImageRepo }} \
-          --set image.tag=latest \
-          --set image.PullSecrets[0].name=regcred
+          helm --debug upgrade --install myapp ./myapp-chart --set image.pullSecrets[0].name=regcred
 
