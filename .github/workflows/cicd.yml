@@ -5,7 +5,8 @@ on:
     branches:
       - main
 
-permissions:
+permissions: # github actions permissions to access the repository and the registry 
+  # KUBECONFIG: ${{ secrets.KUBECONFIG }} # and the k8s cluster if needed
   contents: read
   packages: write
 
