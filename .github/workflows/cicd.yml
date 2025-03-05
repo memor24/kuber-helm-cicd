@@ -53,10 +53,6 @@ jobs:
           chmod +x ./kubectl
           sudo mv ./kubectl /usr/local/bin/kubectl
 
-      - name: install Helm
-        run: |
-          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-
       - name : create regcred kubernetes secret for kubectl acccess to ghcr
         run: |
           kubectl create secret docker-registry regcred \
@@ -65,6 +61,10 @@ jobs:
           --docker-password=${{ secrets.GITHUB_TOKEN }} \
           --docker-email=${{ github.actor }}@sth.co \
           --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: install Helm
+        run: |
+          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
       - name: helm release counter
         id: counter
