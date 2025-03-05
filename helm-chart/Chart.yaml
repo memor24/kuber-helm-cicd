@@ -1,5 +1,5 @@
 apiVersion: v2
-name: myapp
+name: my-app
 description: A Helm chart for Kubernetes deployment of a flask application myapp
 version: 0.3.0
 appVersion: "1.6.0"

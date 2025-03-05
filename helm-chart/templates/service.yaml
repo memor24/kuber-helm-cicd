@@ -6,6 +6,6 @@ spec:
   type: {{ .Values.service.type | default "ClusterIP" }}
   ports:
     - port: {{ .Values.service.port | default 80 }}
-      targetPort: 6666
+      targetPort: 8080  # exposed port on the pods
   selector:
     name: {{ .Chart.Name }}

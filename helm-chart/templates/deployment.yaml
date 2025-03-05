@@ -8,15 +8,15 @@ spec:
   selector:
     matchLabels:
       app: {{ .Chart.Name }}
-  template:
+  template:                     # template for the pods
     metadata:
       labels:
         app: {{ .Chart.Name }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          ports:
-            - containerPort: 6666 # This is the port that the container listens on and Flask app runs on
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          # ports:    # This is the port that the container inside the pod listens to, and runs the app on
+          #   - containerPort: 8080   # optional? compared to targetPort
       imagePullSecrets:
         {{- toYaml .Values.image.PullSecrets | nindent 8 }}
