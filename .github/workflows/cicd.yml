@@ -1,6 +1,7 @@
 name: deploying myapp flask app to a KinD cluster
 
 on:
+  pull_request: { branches: ["*"] }
   push:
     branches:
       - main
