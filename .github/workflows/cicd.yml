@@ -70,12 +70,12 @@ jobs:
         id: counter
         run: |
           if [ -f release.txt ]; then
-            COUNTER=$(cat release.txt)
+            COUNTER=$(cat release.txt | tail -1)
           else
             COUNTER=0
           fi
           COUNTER=$((COUNTER+1))
-          echo $COUNTER > release.txt
+          echo $COUNTER >> release.txt
           echo "release=${COUNTER}" >> $GITHUB_OUTPUT
 
       - name: deploy the Helm chart 
