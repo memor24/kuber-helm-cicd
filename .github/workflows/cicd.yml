@@ -33,8 +33,8 @@ jobs:
 
       - name: build and push Docker image
         run: |
-          docker build -t my-app:latest . && \
-          docker tag my-app:latest my-app:${{ github.sha }} && \ 
+          docker build -t my-app:latest .
+          docker tag my-app:latest my-app:${{ github.sha }} 
           docker push ${{ env.Registry }}/${{ env.ImageRepo }}/my-app:${{ github.sha }}
 
       - name: install KinD
