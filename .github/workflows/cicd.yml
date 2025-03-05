@@ -69,7 +69,7 @@ jobs:
       - name: helm release counter
         id: counter
         run: |
-          if [ -f release.txt ] then;
+          if [ -f release.txt ]; then
             COUNTER=$(cat release.txt)
           else
             COUNTER=0
