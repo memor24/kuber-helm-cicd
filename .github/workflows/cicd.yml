@@ -12,7 +12,7 @@ permissions:          # github actions permissions to access the repository and 
 
 env:
   Registry: ghcr.io
-  ImageRepo: memor24/imagesfolder
+  ImageRepo: memor24/khg-imagesfolder
 
 jobs:
   build-and-deploy:
@@ -69,7 +69,11 @@ jobs:
       - name: helm release counter
         id: counter
         run: |
-          COUNTER=0
+          if [ -f release.txt ] then;
+            COUNTER=$(cat release.txt)
+          else
+            COUNTER=0
+          fi
           COUNTER=$((COUNTER+1))
           echo $COUNTER > release.txt
           echo "release=${COUNTER}" >> $GITHUB_OUTPUT
