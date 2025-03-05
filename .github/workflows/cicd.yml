@@ -44,7 +44,7 @@ jobs:
           sudo mv ./kind /usr/local/bin/kind
 
       - name: create KinD cluster
-        run: kind create cluster --name myapp-cluster
+        run: kind create cluster --name my-cluster
         
       - name: install kubectl
         run: |
@@ -65,16 +65,16 @@ jobs:
           --docker-email=${{ github.actor }}@sth.co \
           --dry-run=client -o yaml | kubectl apply -f -
 
-      # - name: helm release counter
-      #   id: counter
-      #   run: |
-      #     COUNTER=0
-      #     COUNTER=$((COUNTER+1))
-      #     echo "release=${COUNTER}" >> $GITHUB_OUTPUT
+      - name: helm release counter
+        id: counter
+        run: |
+          COUNTER=0
+          COUNTER=$((COUNTER+1))
+          echo "release=${COUNTER}" >> $GITHUB_OUTPUT
 
       - name: deploy the Helm chart 
         run: |
-          helm upgrade --install my-app ./helm-chart \
+          helm upgrade --install my-app-${{ steps.counter.outputs.release }} ./helm-chart \
           --set image.repository=${{ env.Registry }}/${{ env.ImageRepo }}/my-app \
           --set image.tag=${{ github.sha }} \
           --set image.pullSecrets[0].name=regcred
