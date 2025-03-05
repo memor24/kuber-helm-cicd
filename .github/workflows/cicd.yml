@@ -71,6 +71,7 @@ jobs:
         run: |
           COUNTER=0
           COUNTER=$((COUNTER+1))
+          echo $COUNTER > release.txt
           echo "release=${COUNTER}" >> $GITHUB_OUTPUT
 
       - name: deploy the Helm chart 
