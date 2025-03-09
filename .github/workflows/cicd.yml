@@ -12,7 +12,7 @@ permissions:          # github actions permissions to access the repository and 
 
 env:
   Registry: ghcr.io
-  ImageRepo: memor24/khg-imagesfolder
+  ImageRepo: memor24/khc-images
 
 jobs:
   build-and-deploy:
@@ -45,7 +45,15 @@ jobs:
           sudo mv ./kind /usr/local/bin/kind
 
       - name: create KinD cluster
-        run: kind create cluster --name my-cluster --config ./kind-config.yaml
+        run: |
+          kind create cluster --name my-cluster --config ./kind-config.yaml
+          kubectl wait --for=condition=Ready nodes --all --timeout=180s
+
+      - name: config kubectl to use the KinD cluster
+        run: |
+          kubectl cluster-info --context kind-my-cluster
+          kubectl config use-context kind-my-cluster
+
 
       - name : create regcred kubernetes secret for kubectl acccess to ghcr
         run: |
@@ -60,14 +68,11 @@ jobs:
         run: |
           curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
-      - name: update the Helm chart 
+      - name: update the Helm chart and deploy the app to the KinD cluster
         run: |
+          kubeclt create namespace app-ns
           helm upgrade --install my-app ./helm-chart \
           --set image.repository=${{ env.Registry }}/${{ env.ImageRepo }}/my-app \
           --set image.tag=${{ github.sha }} \
           --set image.pullSecrets[0].name=regcred
-
-      - name: deploy the app
-        run: |
-          kubectl apply -f ./helm-chart/templates/deployment.yaml -n app-ns --cluster my-cluster
-
+          -- namespace app-ns
