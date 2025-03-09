@@ -79,4 +79,4 @@ jobs:
           --set image.repository=${{ env.Registry }}/${{ env.ImageRepo }}/my-app \
           --set image.tag=${{ github.sha }} \
           --set image.pullSecrets[0].name=regcred
-          -- namespace app-ns
+          --namespace app-ns
