@@ -45,14 +45,7 @@ jobs:
           sudo mv ./kind /usr/local/bin/kind
 
       - name: create KinD cluster
-        run: kind create cluster --name my-cluster
-        
-      # KinD installs kubectl by default
-      # - name: install kubectl
-      #   run: |
-      #     curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
-      #     chmod +x ./kubectl
-      #     sudo mv ./kubectl /usr/local/bin/kubectl
+        run: kind create cluster --name my-cluster --config ./kind-config.yaml
 
       - name : create regcred kubernetes secret for kubectl acccess to ghcr
         run: |
@@ -67,10 +60,14 @@ jobs:
         run: |
           curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
-      - name: deploy the Helm chart 
+      - name: update the Helm chart 
         run: |
           helm upgrade --install my-app ./helm-chart \
           --set image.repository=${{ env.Registry }}/${{ env.ImageRepo }}/my-app \
           --set image.tag=${{ github.sha }} \
           --set image.pullSecrets[0].name=regcred
+
+      - name: deploy the app
+        run: |
+          kubectl apply -f ./helm-chart/templates/deployment.yaml -n app-ns --cluster my-cluster
 
