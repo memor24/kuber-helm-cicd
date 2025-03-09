@@ -70,7 +70,7 @@ jobs:
 
       - name: update the Helm chart and deploy the app to the KinD cluster
         run: |
-          kubeclt create namespace app-ns
+          kubectl create namespace app-ns \
           helm upgrade --install my-app ./helm-chart \
           --set image.repository=${{ env.Registry }}/${{ env.ImageRepo }}/my-app \
           --set image.tag=${{ github.sha }} \
