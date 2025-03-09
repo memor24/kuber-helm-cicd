@@ -17,6 +17,6 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           # ports:    # This is the port that the container inside the pod listens to, and runs the app on
-          #   - containerPort: 8080   # optional? compared to targetPort
+          #   - containerPort: 6666   # optional, compared to targetPort
       imagePullSecrets:
         {{- toYaml .Values.image.PullSecrets | nindent 8 }}

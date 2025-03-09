@@ -47,11 +47,12 @@ jobs:
       - name: create KinD cluster
         run: kind create cluster --name my-cluster
         
-      - name: install kubectl
-        run: |
-          curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
-          chmod +x ./kubectl
-          sudo mv ./kubectl /usr/local/bin/kubectl
+      # KinD installs kubectl by default
+      # - name: install kubectl
+      #   run: |
+      #     curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+      #     chmod +x ./kubectl
+      #     sudo mv ./kubectl /usr/local/bin/kubectl
 
       - name : create regcred kubernetes secret for kubectl acccess to ghcr
         run: |
@@ -66,21 +67,9 @@ jobs:
         run: |
           curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
-      - name: helm release counter
-        id: counter
-        run: |
-          if [ -f release.txt ]; then
-            COUNTER=$(cat release.txt | tail -1)
-          else
-            COUNTER=0
-          fi
-          COUNTER=$((COUNTER+1))
-          echo $COUNTER >> release.txt
-          echo "release=${COUNTER}" >> $GITHUB_OUTPUT
-
       - name: deploy the Helm chart 
         run: |
-          helm upgrade --install my-app-${{ steps.counter.outputs.release }} ./helm-chart \
+          helm upgrade --install my-app ./helm-chart \
           --set image.repository=${{ env.Registry }}/${{ env.ImageRepo }}/my-app \
           --set image.tag=${{ github.sha }} \
           --set image.pullSecrets[0].name=regcred
