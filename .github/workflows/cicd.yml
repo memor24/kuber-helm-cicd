@@ -75,8 +75,8 @@ jobs:
 
       - name: update the Helm chart and deploy the app to the KinD cluster
         run: |
-          helm upgrade --install my-app ./helm-chart \
+          helm upgrade --install my-app ./helm-chart --namespace app-ns  \
           --set image.repository=${{ env.Registry }}/${{ env.ImageRepo }}/my-app \
           --set image.tag=${{ github.sha }} \
           --set image.pullSecrets[0].name=regcred
-          --namespace app-ns
+          
