@@ -53,6 +53,11 @@ jobs:
         run: |
           kubectl cluster-info --context kind-my-cluster
           kubectl config use-context kind-my-cluster
+          kubectl create namespace app-ns 
+          kubectl create rolebinding default-admin \
+          --clusterrole=admin \
+          --serviceaccount=app-ns:default \
+          --namespace=app-ns
 
 
       - name : create regcred kubernetes secret for kubectl acccess to ghcr
@@ -70,7 +75,6 @@ jobs:
 
       - name: update the Helm chart and deploy the app to the KinD cluster
         run: |
-          kubectl create namespace app-ns \
           helm upgrade --install my-app ./helm-chart \
           --set image.repository=${{ env.Registry }}/${{ env.ImageRepo }}/my-app \
           --set image.tag=${{ github.sha }} \
