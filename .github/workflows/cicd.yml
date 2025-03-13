@@ -34,6 +34,7 @@ jobs:
 
       - name: build and push Docker image
         run: |
+          cd app
           docker build -t my-app:latest . 
           docker tag my-app:latest ${{ env.Registry }}/${{ env.ImageRepo }}/my-app:${{ github.sha }} 
           docker push ${{ env.Registry }}/${{ env.ImageRepo }}/my-app:${{ github.sha }}
